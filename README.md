@@ -1,1 +1,8 @@
-# api_municipios
+# Api_municipios 
+Notas Explicativas - explicando as principais decisões técnicas: <br><br>
+A solução consiste em um script em Python que lê um arquivo CSV contendo municípios e suas populações, consulta dados oficiais da API pública do IBGE e realiza o processamento dessas informações para gerar estatísticas consolidadas.
+Inicialmente, o programa utiliza a biblioteca pandas para ler o arquivo e faz uma requisição HTTP com requests para obter a lista de municípios do IBGE. Caso haja uma falha na API, seja por problema de conexão ou por um status diferente de 200, o sistema trata essa situação marcando todos os registros com o status ERRO_API, permitindo que o programa continue sua execução normalmente.
+Quando a API responde de forma adequada, os municípios são armazenados em um dicionário local para facilitar buscas futuras. Os nomes dos municípios são normalizados, convertendo para letras minúsculas e removendo acentos com a função unidecode, a fim de padronizar as comparações.
+Para lidar com possíveis erros de digitação, foi utilizado fuzzy matching com a biblioteca rapidfuzz, aceitando correspondências apenas quando o índice de similaridade for maior ou igual a 90, o que ajuda a evitar associações incorretas. Além disso, foi implementada uma verificação para letras repetidas consecutivas, impedindo que certos erros inseridos propositalmente no conjunto de dados fossem corrigidos automaticamente.
+Após o processamento, os resultados são armazenados em um arquivo CSV, e são calculadas estatísticas como o número total de municípios, as correspondências encontradas, as não encontradas, os erros de API, a soma da população válida e a média populacional por região.
+Por fim, essas estatísticas são enviadas para um endpoint de avaliação, que retorna uma pontuação final (score) indicando a precisão da solução.
